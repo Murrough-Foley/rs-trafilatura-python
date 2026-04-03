@@ -15,16 +15,29 @@ from typing import Any, Dict, List
 
 from rs_trafilatura._core import extract as _extract
 
+# Inherit from crawl4ai's ExtractionStrategy when available so that
+# isinstance() checks in CrawlerRunConfig pass. When crawl4ai is not
+# installed, fall back to a standalone base class.
+try:
+    from crawl4ai.extraction_strategy import ExtractionStrategy as _Base
+except ImportError:
+    class _Base:
+        """Fallback base when crawl4ai is not installed."""
+        def __init__(self, input_format="html", **kwargs):
+            self.input_format = input_format
+            self.DEL = "<|DEL|>"
+            self.name = self.__class__.__name__
+            self.verbose = kwargs.get("verbose", False)
 
-class RsTrafilaturaStrategy:
+
+class RsTrafilaturaStrategy(_Base):
     """crawl4ai ExtractionStrategy that uses rs-trafilatura for content extraction.
 
     Set as extraction_strategy in CrawlerRunConfig. Receives raw HTML
     (input_format="html") and returns structured extraction results.
 
-    This class duck-types crawl4ai's ExtractionStrategy interface rather than
-    inheriting from it, so that rs-trafilatura does not require crawl4ai as a
-    dependency. All required attributes and methods are implemented.
+    Inherits from crawl4ai's ExtractionStrategy when crawl4ai is installed,
+    so that isinstance() checks pass. Falls back to a standalone class otherwise.
     """
 
     def __init__(
@@ -34,10 +47,8 @@ class RsTrafilaturaStrategy:
         output_markdown: bool = False,
         **kwargs,
     ):
-        self.input_format = "html"
+        super().__init__(input_format="html", **kwargs)
         self.name = "RsTrafilaturaStrategy"
-        self.verbose = kwargs.get("verbose", False)
-        self.DEL = "<|DEL|>"
         self._favor_precision = favor_precision
         self._favor_recall = favor_recall
         self._output_markdown = output_markdown
