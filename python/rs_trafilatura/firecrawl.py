@@ -5,7 +5,7 @@ Usage:
     from rs_trafilatura.firecrawl import extract_firecrawl_result
 
     app = FirecrawlApp(api_key="...")
-    result = app.scrape_url("https://example.com", params={"formats": ["html"]})
+    result = app.scrape("https://example.com", formats=["html"])
     extracted = extract_firecrawl_result(result)
     print(extracted.title, extracted.main_content, extracted.page_type)
 """
@@ -14,7 +14,7 @@ from rs_trafilatura._core import extract, ExtractResult
 
 
 def extract_firecrawl_result(
-    result: dict,
+    result,
     favor_precision: bool = False,
     favor_recall: bool = False,
     output_markdown: bool = False,
@@ -22,8 +22,9 @@ def extract_firecrawl_result(
     """Extract content from a Firecrawl scrape result.
 
     Args:
-        result: The dict returned by FirecrawlApp.scrape_url().
-            Must contain 'html' key (request formats=["html"]).
+        result: The result from FirecrawlApp.scrape(). Accepts both
+            v4 Document objects (with .html and .metadata attributes)
+            and legacy v1 dicts (with 'html' and 'metadata' keys).
         favor_precision: Stricter filtering.
         favor_recall: More inclusive, may include some noise.
         output_markdown: Generate Markdown output.
@@ -31,8 +32,14 @@ def extract_firecrawl_result(
     Returns:
         ExtractResult with title, main_content, page_type, etc.
     """
-    html = result.get("html", "")
-    url = result.get("metadata", {}).get("sourceURL", "")
+    # Support both v4 Document objects and legacy v1 dicts
+    if isinstance(result, dict):
+        html = result.get("html", "")
+        url = result.get("metadata", {}).get("sourceURL", "")
+    else:
+        html = getattr(result, "html", "") or ""
+        metadata = getattr(result, "metadata", None)
+        url = getattr(metadata, "url", "") or getattr(metadata, "source_url", "") or "" if metadata else ""
 
     return extract(
         html,
