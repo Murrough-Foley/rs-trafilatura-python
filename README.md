@@ -169,7 +169,7 @@ async def handler(context):
 
 ## Benchmarks
 
-Tested on the [Web Content Extraction Benchmark](https://webcontentextraction.org) (WCEB) — 1,497 pages across 7 page types:
+Tested on the [Web Content Extraction Benchmark](https://webcontentextraction.org) (WCXB) — 1,497 pages across 7 page types:
 
 | System | F1 | Speed |
 |--------|---:|------:|
