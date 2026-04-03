@@ -1,0 +1,25 @@
+[package]
+name = "rs-trafilatura-python"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.86"
+authors = ["Murrough Foley"]
+description = "Python bindings for rs-trafilatura: fast web content extraction, page classification, HTML cleaning, and Markdown conversion"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[lib]
+name = "rs_trafilatura"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+# Path deps for local development — switch to crates.io versions for PyPI publish:
+# rs-trafilatura = "0.2"
+# web-page-classifier = "0.1"
+# html-cleaning = "0.3"
+# quick_html2md = "0.2"
+rs-trafilatura = { path = "../rs-trafilatura-public" }
+web-page-classifier = { path = "../web-page-classifier" }
+html-cleaning = { path = "../html-cleaning" }
+quick_html2md = { path = "../quick_html2md" }

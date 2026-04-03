@@ -1,0 +1,30 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "rs-trafilatura"
+version = "0.1.0"
+description = "Fast web content extraction, page classification, HTML cleaning, and Markdown conversion — powered by Rust"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+requires-python = ">=3.9"
+authors = [{ name = "Murrough Foley" }]
+keywords = ["web", "content-extraction", "html", "scraping", "trafilatura", "boilerplate-removal", "markdown"]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: 3",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Text Processing :: Markup :: HTML",
+]
+
+[project.urls]
+Homepage = "https://webcontentextraction.org"
+Repository = "https://github.com/Murrough-Foley/rs-trafilatura-python"
+Documentation = "https://github.com/Murrough-Foley/rs-trafilatura-python#readme"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "rs_trafilatura._core"
